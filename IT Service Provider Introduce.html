@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT 软件开发与数字化服务 | 定制化解决方案</title>
+    
+    <!-- Chosen Palette: Warm Neutrals with Tech Sky Blue & Emerald Accents -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Strong value proposition to immediately capture attention.
+         2. Interactive Services Module: The core of the report. Uses a tabbed interface linked to dynamic Chart.js visualizations. This allows users to explore "What we do" while seeing the *impact* (illustrative data) of each service, making abstract tech concepts concrete.
+         3. Portfolio Gallery: A clean grid displaying past projects with direct links, proving capability.
+         4. Why Choose Us: A comparative analysis section highlighting competitive advantages.
+         5. Contact/CTA: Clear call to action to convert interest into leads.
+         This structure transforms a static list into an engaging, self-driven exploratory journey. 
+    -->
+    <!-- Visualization & Content Choices: 
+         - Service 1 (Management): Radar Chart -> Goal: Compare traditional vs digital -> Interaction: Tab click -> Justification: Shows multi-dimensional improvement -> Library: Chart.js
+         - Service 2 (Web/Online): Line Chart -> Goal: Show growth trend -> Interaction: Tab click -> Justification: Illustrates the value of online presence over time -> Library: Chart.js
+         - Service 3 (Automation): Bar Chart -> Goal: Compare time spent -> Interaction: Tab click -> Justification: Clearly quantifies "labor cost savings" -> Library: Chart.js
+         - Portfolio & Features: Grid/Cards -> Goal: Organize information -> Interaction: Hover effects, external links -> Justification: Easy scanning -> Method: HTML/Tailwind
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Used Unicode icons instead.
+    -->
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            500: '#10b981', // Emerald for growth/success
+                        },
+                        neutral: {
+                            50: '#f8fafc',
+                            800: '#1e293b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"PingFang SC"', '"Microsoft YaHei"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Base styles & smooth scrolling */
+        html { scroll-behavior: smooth; }
+        body { background-color: #f8fafc; color: #1e293b; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* REQUIRED Chart Container Styling */
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px; 
+            max-height: 400px; 
+        }
+        @media (min-width: 768px) { 
+            .chart-container { height: 350px; } 
+        }
+
+        /* Unicode Icon Styling */
+        .u-icon { font-size: 2.5rem; line-height: 1; display: inline-block; margin-bottom: 1rem; }
+        .u-icon-sm { font-size: 1.5rem; line-height: 1; margin-right: 0.5rem; vertical-align: middle; }
+
+        /* Animation Utilities */
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Tab active state */
+        .tab-btn.active { background-color: #0ea5e9; color: white; border-color: #0ea5e9; box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3); }
+        .tab-btn:not(.active):hover { background-color: #e0f2fe; color: #0284c7; }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <span class="text-2xl">💻</span>
+                    <span class="font-bold text-xl tracking-tight text-brand-900">IT 软件开发与数字化服务</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#services" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">核心服务</a>
+                    <a href="#portfolio" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">过往作品</a>
+                    <a href="#why-us" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">为什么选我们</a>
+                </div>
+                <div>
+                    <a href="#contact" class="bg-brand-600 hover:bg-brand-900 text-white px-5 py-2 rounded-full font-medium transition-all shadow-md hover:shadow-lg">免费咨询</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-24 pb-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-brand-50 to-white -z-10"></div>
+        <!-- Decorative abstract element using CSS -->
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-brand-100/50 blur-3xl -z-10"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-accent-500/10 blur-3xl -z-10"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-brand-900 tracking-tight mb-6">
+                为您量身打造的<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-accent-500">数字化引擎</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600 mb-10">
+                专注于为中小企业、传统行业和创业者提供定制化的软件和网站开发服务。告别不合身的现成软件，让业务运转如丝般顺滑。
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="#services" class="bg-brand-600 text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-brand-900 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                    探索解决方案 ⬇️
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Interactive Services Section -->
+    <section id="services" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-brand-900 mb-4">💡 我们能为您开发什么？</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto text-lg">
+                    以下互动面板展示了我们的三大核心服务模块。点击不同的服务卡片，查看它是如何解决特定业务痛点，并带来显著的数据化效能提升的。
+                </p>
+            </div>
+
+            <!-- Service Selectors -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12" id="service-tabs">
+                <button data-target="sys" class="tab-btn active w-full text-left p-6 rounded-2xl border-2 border-brand-100 bg-white transition-all">
+                    <div class="u-icon">⚙️</div>
+                    <h3 class="text-xl font-bold mb-2">1. 传统生意“搬到线上”</h3>
+                    <p class="text-sm opacity-80">企业定制管理系统，提升管理效率</p>
+                </button>
+                <button data-target="web" class="tab-btn w-full text-left p-6 rounded-2xl border-2 border-brand-100 bg-white transition-all">
+                    <div class="u-icon">🌐</div>
+                    <h3 class="text-xl font-bold mb-2">2. 网上接单和展示</h3>
+                    <p class="text-sm opacity-80">各类商业网站与平台，扩大商业版图</p>
+                </button>
+                <button data-target="auto" class="tab-btn w-full text-left p-6 rounded-2xl border-2 border-brand-100 bg-white transition-all">
+                    <div class="u-icon">🤖</div>
+                    <h3 class="text-xl font-bold mb-2">3. 节省人工成本</h3>
+                    <p class="text-sm opacity-80">业务流程自动化，实现降本增效</p>
+                </button>
+            </div>
+
+            <!-- Dynamic Content Area -->
+            <div class="bg-brand-50 rounded-3xl p-8 md:p-12 shadow-inner border border-brand-100 flex flex-col lg:flex-row items-center gap-12 min-h-[450px]">
+                
+                <!-- Text Details -->
+                <div class="w-full lg:w-1/2" id="service-content">
+                    <!-- Content injected via JS -->
+                </div>
+
+                <!-- Visualization -->
+                <div class="w-full lg:w-1/2 bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                    <h4 class="text-center text-sm font-bold text-gray-500 mb-4 tracking-wider uppercase" id="chart-title">实施效果对比分析</h4>
+                    <!-- Chart Container following strict requirements -->
+                    <div class="chart-container">
+                        <canvas id="serviceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-20 bg-neutral-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-brand-900 mb-4">🔗 过往作品演示 (Demo)</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto text-lg">
+                    百闻不如一见。您可以直接点击下方项目，亲自体验我们开发的系统交互界面、响应式设计以及功能逻辑。（注：展示的为公开演示版本）
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow border border-gray-100 overflow-hidden group flex flex-col h-full">
+                    <div class="h-40 bg-gradient-to-br from-blue-100 to-indigo-50 flex items-center justify-center border-b border-gray-100">
+                        <span class="text-6xl group-hover:scale-110 transition-transform duration-300">📊</span>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <div class="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold mb-3 self-start">管理后台</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">企业级系统后台与交互界面</h3>
+                        <p class="text-gray-600 mb-6 flex-grow">包含复杂的数据表格展示、动态路由、深色/浅色模式切换等现代SPA（单页应用）核心特性。</p>
+                        <a href="https://junwen003.github.io/SPA_Prototype/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-full bg-gray-900 text-white px-4 py-2 rounded-lg font-medium hover:bg-brand-600 transition-colors">
+                            体验 Demo ↗
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow border border-gray-100 overflow-hidden group flex flex-col h-full">
+                    <div class="h-40 bg-gradient-to-br from-emerald-100 to-teal-50 flex items-center justify-center border-b border-gray-100">
+                        <span class="text-6xl group-hover:scale-110 transition-transform duration-300">🏭</span>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <div class="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold mb-3 self-start">工业物联</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">工业/设备类监控管理系统</h3>
+                        <p class="text-gray-600 mb-6 flex-grow">针对特定工业场景（如冷却系统）定制的数据监控面板，实时反映设备状态与关键指标。</p>
+                        <a href="https://cooling-system-v2-hmnk.vercel.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-full bg-gray-900 text-white px-4 py-2 rounded-lg font-medium hover:bg-brand-600 transition-colors">
+                            体验 Demo ↗
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow border border-gray-100 overflow-hidden group flex flex-col h-full">
+                    <div class="h-40 bg-gradient-to-br from-orange-100 to-amber-50 flex items-center justify-center border-b border-gray-100">
+                        <span class="text-6xl group-hover:scale-110 transition-transform duration-300">🐟</span>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <div class="inline-block px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-bold mb-3 self-start">商业展示</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">商业展示与响应式网页设计</h3>
+                        <p class="text-gray-600 mb-6 flex-grow">高质量的现代企业官网/着陆页设计，完美适配手机、平板及桌面端，提升品牌形象。</p>
+                        <a href="https://junwen003.github.io/HTML_FISH_SC/index.html" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-full bg-gray-900 text-white px-4 py-2 rounded-lg font-medium hover:bg-brand-600 transition-colors">
+                            体验 Demo ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center p-4 bg-white rounded-xl border border-gray-200 inline-block mx-auto">
+                <p class="text-sm text-gray-500 font-medium">
+                    <span class="text-brand-500">📌 深度业务项目说明：</span> 除上述公开演示外，我们团队也主导开发并交付过复杂的<strong class="text-gray-800">保洁行业综合管理系统</strong>、<strong class="text-gray-800">制造业定制报价系统</strong>等涉及核心商业机密的项目。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section id="why-us" class="py-20 bg-brand-900 text-white relative overflow-hidden">
+        <!-- Abstract background styling -->
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 20px 20px;"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">⭐ 为什么找我们做？</h2>
+                <p class="text-brand-100 max-w-2xl mx-auto text-lg">我们的优势在于技术与商业的完美结合，确保每一分投入都能转化为实实在在的生产力。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="text-center p-6">
+                    <div class="text-5xl mb-6 bg-white/10 w-24 h-24 mx-auto rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20">🎯</div>
+                    <h3 class="text-xl font-bold mb-3">绝对贴合业务</h3>
+                    <p class="text-brand-100 leading-relaxed">要什么功能就做什么功能，没有任何多余的累赘，根据实际业务流程量身定制，您的员工上手极快。</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="text-5xl mb-6 bg-white/10 w-24 h-24 mx-auto rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20">🛡️</div>
+                    <h3 class="text-xl font-bold mb-3">资深团队品质</h3>
+                    <p class="text-brand-100 leading-relaxed">由拥有多年大型项目开发与管理经验的资深工程师亲自带队，系统运行稳定、不卡顿、数据安全有严格保障。</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="text-5xl mb-6 bg-white/10 w-24 h-24 mx-auto rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20">💎</div>
+                    <h3 class="text-xl font-bold mb-3">性价比极高</h3>
+                    <p class="text-brand-100 leading-relaxed">您将直接对接核心技术开发人员，省去传统外包公司高昂的运营和销售差价，确保每一分钱都花在产品刀刃上。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-br from-brand-50 to-white rounded-3xl shadow-xl border border-brand-100 p-8 md:p-12 text-center">
+                <span class="text-5xl mb-4 block">🤝</span>
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">准备好开启您的数字化升级了吗？</h2>
+                <p class="text-gray-600 mb-8 text-lg">联系我们，免费获取专业的系统定制方案与技术评估。</p>
+                
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-6 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm inline-flex mx-auto text-left w-full md:w-auto">
+                    <div class="flex items-center gap-4 border-b sm:border-b-0 sm:border-r border-gray-200 pb-4 sm:pb-0 sm:pr-6 w-full sm:w-auto justify-center sm:justify-start">
+                        <span class="text-3xl text-brand-500">👤</span>
+                        <div>
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">联系人</p>
+                            <p class="text-lg font-semibold text-gray-900">[合伙人姓名]</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 border-b sm:border-b-0 sm:border-r border-gray-200 pb-4 sm:pb-0 sm:pr-6 w-full sm:w-auto justify-center sm:justify-start">
+                        <span class="text-3xl text-accent-500">📞</span>
+                        <div>
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">电话 / WhatsApp</p>
+                            <a href="tel:#" class="text-lg font-semibold text-gray-900 hover:text-brand-600 transition-colors">[联系电话]</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 w-full sm:w-auto justify-center sm:justify-start">
+                        <span class="text-3xl text-amber-500">✉️</span>
+                        <div>
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">邮箱</p>
+                            <a href="mailto:#" class="text-lg font-semibold text-gray-900 hover:text-brand-600 transition-colors">[电子邮箱]</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
+            &copy; 2024 IT 软件开发服务团队. 保留所有权利.
+        </div>
+    </footer>
+
+    <!-- Interactive JavaScript Logic -->
+    <script>
+        // Data Storage for the Interactive Services Module
+        const serviceData = {
+            'sys': {
+                title: '定制内部管理后台与系统',
+                target: '还在用纸笔、或者复杂 Excel 来管理业务的老板（如工厂、保洁公司、传统服务业）。',
+                description: '告别数据孤岛。定制员工排班与派单系统、自动报价与算料系统（例如家具厂定制报价单）。帮您省去人工计算的麻烦，大幅降低出错率，提升管理效率。',
+                chartTitle: '数字化前后的企业核心指标对比',
+                chartType: 'radar',
+                chartData: {
+                    labels: ['处理速度', '数据准确率', '信息互通性', '管理透明度', '人力成本(反向)'],
+                    datasets: [
+                        {
+                            label: '传统方式 (纸笔/Excel)',
+                            data: [30, 40, 20, 30, 20],
+                            backgroundColor: 'rgba(156, 163, 175, 0.2)',
+                            borderColor: 'rgba(156, 163, 175, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(156, 163, 175, 1)'
+                        },
+                        {
+                            label: '定制系统后',
+                            data: [90, 95, 100, 85, 90],
+                            backgroundColor: 'rgba(14, 165, 233, 0.4)',
+                            borderColor: 'rgba(14, 165, 233, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(14, 165, 233, 1)'
+                        }
+                    ]
+                }
+            },
+            'web': {
+                title: '商业网站与线上平台搭建',
+                target: '需要在互联网上接单、展示公司实力，或者想做一个整合行业资源的平台。',
+                description: '为您打造24小时不打烊的线上门面。包括高端企业品牌官网、客户在线预约服务系统、类似黄页的分类信息网站。完美适应手机端浏览，抓住每一个潜在客户。',
+                chartTitle: '平台上线后的客户触达与询盘趋势（示例）',
+                chartType: 'line',
+                chartData: {
+                    labels: ['第1个月', '第2个月', '第3个月', '第4个月', '第5个月', '第6个月'],
+                    datasets: [
+                        {
+                            label: '网站流量 (IP)',
+                            data: [500, 1200, 2500, 4000, 6500, 9000],
+                            borderColor: 'rgba(16, 185, 129, 1)', // Emerald
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: '有效询盘数',
+                            data: [10, 35, 80, 150, 280, 450],
+                            borderColor: 'rgba(14, 165, 233, 1)', // Sky blue
+                            backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                }
+            },
+            'auto': {
+                title: '专属业务流程自动化工具',
+                target: '每天有大量重复性工作，比如需要人工整理表格、跨系统复制粘贴、手动发邮件或通知的公司。',
+                description: '让机器做机器该做的事。开发专属自动化工具，让系统自动帮您处理繁琐的日常数据对接和流转，释放员工精力去创造更高价值，实现真正的降本增效。',
+                chartTitle: '人工操作与自动化处理耗时对比（小时/周）',
+                chartType: 'bar',
+                chartData: {
+                    labels: ['数据录入与整理', '多系统数据同步', '报表生成', '客户邮件/通知', '错误排查'],
+                    datasets: [
+                        {
+                            label: '纯人工操作',
+                            data: [15, 10, 8, 12, 5],
+                            backgroundColor: 'rgba(244, 63, 94, 0.7)', // Rose
+                            borderRadius: 4
+                        },
+                        {
+                            label: '引入自动化工作流',
+                            data: [1, 0.5, 0.5, 1, 0.5],
+                            backgroundColor: 'rgba(16, 185, 129, 0.8)', // Emerald
+                            borderRadius: 4
+                        }
+                    ]
+                }
+            }
+        };
+
+        // State Management
+        let currentChartInstance = null;
+        const ctx = document.getElementById('serviceChart').getContext('2d');
+        const contentDiv = document.getElementById('service-content');
+        const chartTitleEl = document.getElementById('chart-title');
+        const tabButtons = document.querySelectorAll('.tab-btn');
+
+        // Function to update Content Text
+        function updateContent(key) {
+            const data = serviceData[key];
+            
+            // Remove animation class to restart it
+            contentDiv.classList.remove('fade-in');
+            
+            // Force reflow
+            void contentDiv.offsetWidth; 
+            
+            contentDiv.innerHTML = `
+                <div class="inline-block px-3 py-1 bg-brand-100 text-brand-700 rounded-full text-sm font-bold mb-4">核心服务</div>
+                <h3 class="text-3xl font-bold text-gray-900 mb-6">${data.title}</h3>
+                
+                <div class="mb-6 bg-white p-5 rounded-xl border-l-4 border-brand-500 shadow-sm">
+                    <h4 class="font-bold text-gray-800 flex items-center mb-2"><span class="u-icon-sm">🎯</span> 适合谁？</h4>
+                    <p class="text-gray-600">${data.target}</p>
+                </div>
+                
+                <div class="bg-white p-5 rounded-xl border-l-4 border-accent-500 shadow-sm">
+                    <h4 class="font-bold text-gray-800 flex items-center mb-2"><span class="u-icon-sm">🚀</span> 能做什么？</h4>
+                    <p class="text-gray-600 leading-relaxed">${data.description}</p>
+                </div>
+            `;
+            
+            // Add animation class
+            contentDiv.classList.add('fade-in');
+            chartTitleEl.textContent = data.chartTitle;
+        }
+
+        // Function to render Chart.js
+        function renderChart(key) {
+            const data = serviceData[key];
+            
+            if (currentChartInstance) {
+                currentChartInstance.destroy();
+            }
+
+            // Common options adhering to constraints
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false, // CRITICAL: allows chart to fill container dimensions
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: "'PingFang SC', 'Microsoft YaHei', sans-serif" }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        bodyFont: { family: "'PingFang SC', 'Microsoft YaHei', sans-serif" },
+                        titleFont: { family: "'PingFang SC', 'Microsoft YaHei', sans-serif" }
+                    }
+                }
+            };
+
+            // Specific options for radar
+            if(data.chartType === 'radar') {
+                options.scales = {
+                    r: {
+                        angleLines: { display: true },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: { display: false } // Hide numbers for cleaner look
+                    }
+                };
+            }
+
+            currentChartInstance = new Chart(ctx, {
+                type: data.chartType,
+                data: data.chartData,
+                options: options
+            });
+        }
+
+        // Core Interaction Handling
+        function handleTabClick(e) {
+            const btn = e.currentTarget;
+            const targetKey = btn.getAttribute('data-target');
+
+            // Update active styling
+            tabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update UI
+            updateContent(targetKey);
+            renderChart(targetKey);
+        }
+
+        // Attach Event Listeners
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', handleTabClick);
+        });
+
+        // Initialize App State
+        window.addEventListener('DOMContentLoaded', () => {
+            // Trigger first tab
+            updateContent('sys');
+            renderChart('sys');
+        });
+    </script>
+</body>
+</html>
